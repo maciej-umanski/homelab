@@ -55,24 +55,26 @@
 
 ### Ingress
 
-| Setting         | Port1     | Port2      | Port3      | Port4      | Port5      |
-|-----------------|-----------|------------|------------|------------|------------|
-| VLAN Mode       | `enabled` | `optional` | `optional` | `optional` | `optional` |
-| VLAN Receive    | `any`     | `any`      | `any`      | `any`      | `any`      |
-| Default VLAN ID | `1`       | `1`        | `1`        | `1`        | `1`        |
-| Force VLAN ID   | `[✗]`     | `[✗]`      | `[✗]`      | `[✗]`      | `[✗]`      |
+| Setting         | Port1     | Port2           | Port3           | Port4           | Port5      | SFP        |
+|-----------------|-----------|-----------------|-----------------|-----------------|------------|------------|
+| VLAN Mode       | `enabled` | `strict`        | `strict`        | `strict`        | `optional` | `optional` |
+| VLAN Receive    | `any`     | `only untagged` | `only untagged` | `only untagged` | `any`      | `any`      |
+| Default VLAN ID | `1`       | `10`            | `10`            | `10`            | `1`        | `1`        |
+| Force VLAN ID   | `[✗]`     | `[✗]`           | `[✗]`           | `[✗]`           | `[✗]`      | `[✗]`      |
 
 ### Egress
 
-| Setting     | Port1         | Port2         | Port3         | Port4         | Port5         |
-|-------------|---------------|---------------|---------------|---------------|---------------|
-| VLAN Header | `leave as is` | `leave as is` | `leave as is` | `leave as is` | `leave as is` |
+| Setting     | Port1         | Port2          | Port3          | Port4          | Port5         | SFP           |
+|-------------|---------------|----------------|----------------|----------------|---------------|---------------|
+| VLAN Header | `leave as is` | `always strip` | `always strip` | `always strip` | `leave as is` | `leave as is` |
 
 ## 5. VLANs
 
-| VLAN ID | IVL   | Port1         | Port2         | Port3         | Port4         | Port5         | SFP           |
-|---------|-------|---------------|---------------|---------------|---------------|---------------|---------------|
-| `99`    | `[✗]` | `leave as is` | `leave as is` | `leave as is` | `leave as is` | `leave as is` | `leave as is` |
+| VLAN ID | IVL   | Port1         | Port2          | Port3          | Port4          | Port5         | SFP           |
+|---------|-------|:--------------|----------------|----------------|----------------|---------------|---------------|
+| `1`     | `[✗]` | `leave as is` | `leave as is`  | `leave as is`  | `leave as is`  | `leave as is` | `leave as is` |
+| `10`    | `[✗]` | `leave as is` | `always strip` | `always strip` | `always strip` | `leave as is` | `leave as is` |
+| `99`    | `[✗]` | `leave as is` | `leave as is`  | `leave as is`  | `leave as is`  | `leave as is` | `leave as is` |
 
 ## 6. Static Hosts
 

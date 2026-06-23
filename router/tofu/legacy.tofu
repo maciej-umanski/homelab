@@ -28,11 +28,11 @@ variable "wifi_legacy_2_4ghz_pass" {
 module "vlan_legacy" {
   source = "./modules/vlan"
 
-  vlan_id             = 1
-  bridge              = routeros_interface_bridge.this.name
-  first_two_ip_octets = "192.168"
+  vlan_id               = 10
+  bridge                = routeros_interface_bridge.this.name
+  first_three_ip_octets = "192.168.1"
 
-  tagged_ports        = [
+  tagged_ports = [
     routeros_interface_ethernet.switch.name
   ]
 

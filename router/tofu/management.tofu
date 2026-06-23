@@ -36,10 +36,11 @@ import {
 module "vlan_mgmt" {
   source = "./modules/vlan"
 
-  vlan_id        = 99
-  bridge         = routeros_interface_bridge.this.name
-  tagged_ports   = [routeros_interface_ethernet.switch.name]
-  untagged_ports = [routeros_interface_ethernet.mgmt.name]
+  vlan_id               = 99
+  first_three_ip_octets = "10.10.99"
+  bridge                = routeros_interface_bridge.this.name
+  tagged_ports          = [routeros_interface_ethernet.switch.name]
+  untagged_ports        = [routeros_interface_ethernet.mgmt.name]
 }
 
 module "mgmt_interface_list" {
