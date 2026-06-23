@@ -13,23 +13,11 @@ resource "routeros_system_ntp_client" "this" {
 }
 
 resource "routeros_ip_cloud" "this" {
-  ddns_enabled = true
+  ddns_enabled = "yes"
 }
 
 resource "routeros_tool_bandwidth_server" "this" {
   enabled = false
-}
-
-resource "routeros_ip_neighbor_discovery_settings" "this" {
-  discover_interface_list = routeros_interface_list.mgmt.name
-}
-
-resource "routeros_tool_mac_server" "this" {
-  allowed_interface_list = routeros_interface_list.mgmt.name
-}
-
-resource "routeros_tool_mac_server_winbox" "this" {
-  allowed_interface_list = routeros_interface_list.mgmt.name
 }
 
 resource "routeros_ip_ssh_server" "ssh" {

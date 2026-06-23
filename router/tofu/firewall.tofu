@@ -1,32 +1,3 @@
-resource "routeros_interface_list" "mgmt" { name = "mgmt" }
-resource "routeros_interface_list" "lan" { name = "lan" }
-resource "routeros_interface_list" "wan" { name = "wan" }
-
-resource "routeros_interface_list_member" "mgmt_members" {
-  for_each = {
-    "mgmt"   = module.vlan_mgmt.name
-    "legacy" = module.vlan_legacy.name
-  }
-
-  list      = routeros_interface_list.mgmt.name
-  interface = each.value
-}
-
-resource "routeros_interface_list_member" "lan_members" {
-  for_each = {
-    "legacy" = module.vlan_legacy.name
-    "mgmt"   = module.vlan_mgmt.name
-  }
-
-  list      = routeros_interface_list.lan.name
-  interface = each.value
-}
-
-resource "routeros_interface_list_member" "wan_members" {
-  list      = routeros_interface_list.wan.name
-  interface = routeros_interface_pppoe_client.this.name
-}
-
 resource "routeros_ip_firewall_nat" "this" {
   chain         = "srcnat"
   out_interface = routeros_interface_pppoe_client.this.name
@@ -37,14 +8,25 @@ resource "routeros_ip_firewall_filter" "input_est_rel" {
   chain            = "input"
   action           = "accept"
   connection_state = "established,related,untracked"
-  place_before     = routeros_ip_firewall_filter.input_mgmt.id
+  place_before     = routeros_ip_firewall_filter.input_router_mgmt.id
 }
 
-resource "routeros_ip_firewall_filter" "input_mgmt" {
+resource "routeros_ip_firewall_filter" "input_router_mgmt" {
   chain             = "input"
   action            = "accept"
-  in_interface_list = routeros_interface_list.mgmt.name
+  in_interface_list = module.mgmt_interface_list.name
   dst_port          = "8291,22,80,443"
+  protocol          = "tcp"
+  place_before      = routeros_ip_firewall_filter.forward_switch_mgmt.id
+}
+
+resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
+  chain             = "forward"
+  action            = "accept"
+  connection_state  = "new"
+  in_interface_list = module.mgmt_interface_list.name
+  dst_address_list  = routeros_ip_firewall_addr_list.switches.list
+  dst_port          = "80"
   protocol          = "tcp"
   place_before      = routeros_ip_firewall_filter.input_invalid.id
 }
@@ -66,7 +48,7 @@ resource "routeros_ip_firewall_filter" "input_icmp" {
 resource "routeros_ip_firewall_filter" "input_dns_udp" {
   chain             = "input"
   action            = "accept"
-  in_interface_list = routeros_interface_list.lan.name
+  in_interface_list = module.vlan_interface_list.name
   dst_port          = "53"
   protocol          = "udp"
   place_before      = routeros_ip_firewall_filter.input_dns_tcp.id
@@ -75,7 +57,7 @@ resource "routeros_ip_firewall_filter" "input_dns_udp" {
 resource "routeros_ip_firewall_filter" "input_dns_tcp" {
   chain             = "input"
   action            = "accept"
-  in_interface_list = routeros_interface_list.lan.name
+  in_interface_list = module.vlan_interface_list.name
   dst_port          = "53"
   protocol          = "tcp"
   place_before      = routeros_ip_firewall_filter.input_drop_all.id
@@ -112,8 +94,8 @@ resource "routeros_ip_firewall_filter" "forward_lan_to_wan" {
   chain              = "forward"
   action             = "accept"
   connection_state   = "new"
-  in_interface_list  = routeros_interface_list.lan.name
-  out_interface_list = routeros_interface_list.wan.name
+  in_interface_list  = module.vlan_interface_list.name
+  out_interface_list = module.wan_interface_list.name
   place_before       = routeros_ip_firewall_filter.forward_port_forwarding.id
 }
 

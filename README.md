@@ -8,6 +8,7 @@
 |----------|------------------|
 | N/A      | ISP ONT          |
 | router   | MikroTik hAP ax3 |
+| switch   | MikroTik RB260GS |
 
 ### Servers
 

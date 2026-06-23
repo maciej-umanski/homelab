@@ -1,7 +1,6 @@
-module "vlan_mgmt" {
-  source = "./modules/vlan"
+module "vlan_interface_list" {
+  source = "modules/interface_list"
 
-  vlan_id        = 99
-  bridge         = routeros_interface_bridge.this.name
-  untagged_ports = [routeros_interface_ethernet.ether5.name]
+  name    = "lan"
+  members = [module.vlan_legacy.name]
 }
