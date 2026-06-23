@@ -15,7 +15,7 @@ resource "routeros_interface_pppoe_client" "this" {
 }
 
 module "wan_interface_list" {
-  source = "modules/interface_list"
+  source = "./modules/interface_list"
 
   name    = "wan"
   members = [routeros_interface_pppoe_client.this.name]

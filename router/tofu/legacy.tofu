@@ -26,7 +26,7 @@ variable "wifi_legacy_2_4ghz_pass" {
 }
 
 module "vlan_legacy" {
-  source = "modules/vlan"
+  source = "./modules/vlan"
 
   vlan_id             = 1
   bridge              = routeros_interface_bridge.this.name
@@ -43,7 +43,7 @@ module "vlan_legacy" {
 }
 
 module "wifi_legacy_5ghz" {
-  source = "modules/wifi"
+  source = "./modules/wifi"
 
   vlan_id          = module.vlan_legacy.vlan_id
   bridge           = routeros_interface_bridge.this.name
@@ -53,7 +53,7 @@ module "wifi_legacy_5ghz" {
 }
 
 module "wifi_legacy_2_4ghz" {
-  source = "modules/wifi"
+  source = "./modules/wifi"
 
   vlan_id          = module.vlan_legacy.vlan_id
   bridge           = routeros_interface_bridge.this.name

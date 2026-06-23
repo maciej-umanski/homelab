@@ -34,7 +34,7 @@ import {
 }
 
 module "vlan_mgmt" {
-  source = "modules/vlan"
+  source = "./modules/vlan"
 
   vlan_id        = 99
   bridge         = routeros_interface_bridge.this.name
@@ -43,10 +43,15 @@ module "vlan_mgmt" {
 }
 
 module "mgmt_interface_list" {
-  source = "modules/interface_list"
+  source = "./modules/interface_list"
 
-  name    = "mgmt"
-  members = [module.vlan_mgmt.name, routeros_interface_ethernet.mgmt.name]
+  name = "mgmt"
+
+  members = [
+    module.vlan_mgmt.name,
+    routeros_interface_ethernet.mgmt.name,
+    module.vlan_legacy.name
+  ]
 }
 
 resource "routeros_ip_neighbor_discovery_settings" "this" {
