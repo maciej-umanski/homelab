@@ -58,7 +58,7 @@ module "mgmt_interface_list" {
   members = [
     module.vlan_mgmt.name,
     routeros_interface_ethernet.mgmt.name,
-    module.vlan_main.name
+    module.vlan_trusted.name
   ]
 }
 

@@ -47,7 +47,7 @@ variable "hide_ssid" {
   default     = false
 }
 
-variable "steering_name" {
+variable "steering" {
   type        = string
   description = "The name of the WiFi steering configuration to use for the WiFi network to associate with"
   default     = ""
@@ -56,5 +56,11 @@ variable "steering_name" {
 variable "use_parent_interface" {
   type        = bool
   description = "Whether to use the parent interface for the WiFi network associated with the VLAN interface"
+  default     = false
+}
+
+variable "client_isolation" {
+  type        = bool
+  description = "Whether to enable client isolation for the WiFi network associated with the VLAN interface"
   default     = false
 }

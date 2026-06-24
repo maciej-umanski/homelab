@@ -2,11 +2,9 @@ locals {
   wifi_name = "${var.name_prefix}${var.vlan_id}"
 }
 
-resource "routeros_wifi_security" "this" {
-  name                 = "${local.wifi_name}-security"
-  authentication_types = ["wpa2-psk", "wpa3-psk"]
-  ft                   = var.ft_enabled
-  passphrase           = var.pass
+resource "routeros_wifi_datapath" "this" {
+  name             = "${local.wifi_name}-datapath"
+  client_isolation = var.client_isolation
 }
 
 resource "routeros_wifi_configuration" "this" {
@@ -14,7 +12,15 @@ resource "routeros_wifi_configuration" "this" {
   ssid      = var.ssid
   country   = var.country
   hide_ssid = var.hide_ssid
-  steering  = var.steering_name != "" ? { config = var.steering_name } : null
+  steering  = var.steering != "" ? { config = var.steering } : null
+  datapath  = { config = routeros_wifi_datapath.this.name }
+}
+
+resource "routeros_wifi_security" "this" {
+  name                 = "${local.wifi_name}-security"
+  authentication_types = ["wpa2-psk", "wpa3-psk"]
+  ft                   = var.ft_enabled
+  passphrase           = var.pass
 }
 
 resource "routeros_wifi" "this" {

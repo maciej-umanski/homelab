@@ -46,14 +46,38 @@ variable "pppoe_vlan_id" {
   sensitive   = true
 }
 
-variable "main_wifi_ssid" {
+variable "trusted_wifi_ssid" {
   type        = string
   description = "The SSID for the main WiFi network"
   sensitive   = true
 }
 
-variable "main_wifi_pass" {
+variable "trusted_wifi_pass" {
   type        = string
   description = "The password for the main WiFi network"
+  sensitive   = true
+}
+
+variable "iot_wifi_ssid" {
+  type        = string
+  description = "The SSID for the IoT WiFi network"
+  sensitive   = true
+}
+
+variable "iot_wifi_pass" {
+  type        = string
+  description = "The password for the IoT WiFi network"
+  sensitive   = true
+}
+
+variable "guest_wifi_ssid" {
+  type        = string
+  description = "The SSID for the guest WiFi network"
+  sensitive   = true
+}
+
+variable "guest_wifi_pass" {
+  type        = string
+  description = "The password for the guest WiFi network"
   sensitive   = true
 }
