@@ -1,46 +1,53 @@
+locals {
+  vlan_id   = 99
+  vlan_name = "vlan99"
+  router_ip = "10.10.99.1"
+  switch_ip = "10.10.99.2"
+  port      = "ether5"
+}
+
 import {
-  id = "vlan99"
+  id = local.vlan_name
   to = module.vlan_mgmt.routeros_interface_vlan.this
 }
 
 import {
-  id = "untagged=vlan99"
+  id = "untagged=${local.vlan_name}"
   to = module.vlan_mgmt.routeros_interface_bridge_vlan.this
 }
 
 import {
-  id = "interface=vlan99"
+  id = "interface=${local.vlan_name}"
   to = module.vlan_mgmt.routeros_ip_address.this
 }
 
 import {
-  id = "vlan99-ip-pool"
+  id = "${local.vlan_name}-ip-pool"
   to = module.vlan_mgmt.routeros_ip_pool.this
 }
 
 import {
-  id = "vlan99-dhcp-server"
+  id = "${local.vlan_name}-dhcp-server"
   to = module.vlan_mgmt.routeros_ip_dhcp_server.this
 }
 
 import {
-  id = "gateway=10.10.99.1"
+  id = "gateway=${local.router_ip}"
   to = module.vlan_mgmt.routeros_ip_dhcp_server_network.this
 }
 
 import {
-  id = "pvid=99"
-  to = module.vlan_mgmt.routeros_interface_bridge_port.this["ether5"]
+  id = "pvid=${local.vlan_id}"
+  to = module.vlan_mgmt.routeros_interface_bridge_port.this[local.port]
 }
 
 module "vlan_mgmt" {
   source = "./modules/vlan"
 
-  vlan_id               = 99
-  first_three_ip_octets = "10.10.99"
-  bridge                = routeros_interface_bridge.this.name
-  tagged_ports          = [routeros_interface_ethernet.switch.name]
-  untagged_ports        = [routeros_interface_ethernet.mgmt.name]
+  vlan_id        = local.vlan_id
+  bridge         = routeros_interface_bridge.this.name
+  tagged_ports   = [routeros_interface_ethernet.switch.name]
+  untagged_ports = [routeros_interface_ethernet.mgmt.name]
 }
 
 module "mgmt_interface_list" {
@@ -51,7 +58,7 @@ module "mgmt_interface_list" {
   members = [
     module.vlan_mgmt.name,
     routeros_interface_ethernet.mgmt.name,
-    module.vlan_legacy.name
+    module.vlan_main.name
   ]
 }
 

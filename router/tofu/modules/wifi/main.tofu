@@ -1,5 +1,5 @@
 locals {
-  wifi_name = "${var.parent_interface}-${var.name_prefix}${var.vlan_id}"
+  wifi_name = "${var.name_prefix}${var.vlan_id}"
 }
 
 resource "routeros_wifi_security" "this" {
@@ -18,21 +18,26 @@ resource "routeros_wifi_configuration" "this" {
 }
 
 resource "routeros_wifi" "this" {
-  name             = "${local.wifi_name}-5-ghz"
-  master_interface = var.parent_interface
+  for_each = var.parent_interfaces
+
+  name             = var.use_parent_interface ? each.key : "${local.wifi_name}-${each.key}"
+  master_interface = var.use_parent_interface ? null : each.key
   disabled         = false
 
   configuration = {
     config = routeros_wifi_configuration.this.name
   }
+
   security = {
     config = routeros_wifi_security.this.name
   }
 }
 
 resource "routeros_interface_bridge_port" "this" {
+  for_each = routeros_wifi.this
+
   bridge      = var.bridge
-  interface   = routeros_wifi.this.name
+  interface   = each.value.name
   pvid        = var.vlan_id
   frame_types = "admit-only-untagged-and-priority-tagged"
 }

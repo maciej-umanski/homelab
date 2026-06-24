@@ -1,9 +1,13 @@
+locals {
+  bridge = "bridge"
+}
+
 import {
-  id = "bridge"
+  id = local.bridge
   to = routeros_interface_bridge.this
 }
 
 resource "routeros_interface_bridge" "this" {
-  name           = "bridge"
+  name           = local.bridge
   vlan_filtering = true
 }

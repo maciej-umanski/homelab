@@ -14,9 +14,10 @@ variable "name_prefix" {
   default     = "vlan"
 }
 
-variable "first_three_ip_octets" {
+variable "first_two_octets" {
   type        = string
-  description = "The first three octets of the IP address for the VLAN interface"
+  description = "The first two octets of the IP address for the VLAN interface"
+  default     = "10.10"
 }
 
 variable "network_size" {

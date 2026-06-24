@@ -20,7 +20,7 @@ resource "routeros_tool_bandwidth_server" "this" {
   enabled = false
 }
 
-resource "routeros_ip_ssh_server" "ssh" {
+resource "routeros_ip_ssh_server" "this" {
   strong_crypto = true
 }
 

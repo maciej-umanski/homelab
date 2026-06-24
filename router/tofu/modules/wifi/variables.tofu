@@ -26,10 +26,9 @@ variable "ft_enabled" {
   default     = true
 }
 
-variable "parent_interface" {
-  type        = string
-  description = "The parent radio interface for the WiFi network"
-  default     = null
+variable "parent_interfaces" {
+  type        = set(string)
+  description = "A set of parent interfaces to which the WiFi network associated with the VLAN interface will be added"
 }
 
 variable "ssid" {
@@ -52,4 +51,10 @@ variable "steering_name" {
   type        = string
   description = "The name of the WiFi steering configuration to use for the WiFi network to associate with"
   default     = ""
+}
+
+variable "use_parent_interface" {
+  type        = bool
+  description = "Whether to use the parent interface for the WiFi network associated with the VLAN interface"
+  default     = false
 }

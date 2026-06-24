@@ -25,7 +25,7 @@ resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
   action            = "accept"
   connection_state  = "new"
   in_interface_list = module.mgmt_interface_list.name
-  dst_address_list  = routeros_ip_firewall_addr_list.switches.list
+  dst_address_list  = routeros_ip_firewall_addr_list.switch.list
   dst_port          = "80"
   protocol          = "tcp"
   place_before      = routeros_ip_firewall_filter.input_invalid.id

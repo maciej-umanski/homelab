@@ -1,13 +1,14 @@
 locals {
-  vlan_name             = "${var.name_prefix}${var.vlan_id}"
+  vlan_name = "${var.name_prefix}${var.vlan_id}"
 
-  router_address        = "${var.first_three_ip_octets}.1"
-  router_address_cidr   = "${local.router_address}/${var.network_size}"
-  network_address       = "${var.first_three_ip_octets}.0"
-  network_address_cidr  = "${local.network_address}/${var.network_size}"
-  ip_range_start        = "${var.first_three_ip_octets}.${var.first_usable_ip}"
-  ip_range_end          = "${var.first_three_ip_octets}.${var.last_usable_ip}"
-  ip_range              = ["${local.ip_range_start}-${local.ip_range_end}"]
+  first_three_octets   = "${var.first_two_octets}.${var.vlan_id}"
+  router_address       = "${local.first_three_octets}.1"
+  router_address_cidr  = "${local.router_address}/${var.network_size}"
+  network_address      = "${local.first_three_octets}.0"
+  network_address_cidr = "${local.network_address}/${var.network_size}"
+  ip_range_start       = "${local.first_three_octets}.${var.first_usable_ip}"
+  ip_range_end         = "${local.first_three_octets}.${var.last_usable_ip}"
+  ip_range             = ["${local.ip_range_start}-${local.ip_range_end}"]
 }
 
 resource "routeros_interface_vlan" "this" {

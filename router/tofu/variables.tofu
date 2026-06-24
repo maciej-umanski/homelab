@@ -45,3 +45,15 @@ variable "pppoe_vlan_id" {
   description = "The VLAN ID for the PPPoE connection"
   sensitive   = true
 }
+
+variable "main_wifi_ssid" {
+  type        = string
+  description = "The SSID for the main WiFi network"
+  sensitive   = true
+}
+
+variable "main_wifi_pass" {
+  type        = string
+  description = "The password for the main WiFi network"
+  sensitive   = true
+}
