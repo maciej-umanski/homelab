@@ -12,18 +12,7 @@ resource "routeros_ip_firewall_filter" "input_est_rel" {
   chain            = "input"
   action           = "accept"
   connection_state = "established,related,untracked"
-  place_before     = routeros_ip_firewall_filter.forward_switch_mgmt.id
-}
-
-resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
-  chain             = "forward"
-  action            = "accept"
-  connection_state  = "new"
-  in_interface_list = module.mgmt_interface_list.name
-  dst_address_list  = routeros_ip_firewall_addr_list.switch.list
-  dst_port          = "80"
-  protocol          = "tcp"
-  place_before      = routeros_ip_firewall_filter.input_invalid.id
+  place_before     = routeros_ip_firewall_filter.input_invalid.id
 }
 
 resource "routeros_ip_firewall_filter" "input_invalid" {
@@ -37,6 +26,7 @@ resource "routeros_ip_firewall_filter" "input_icmp" {
   chain        = "input"
   action       = "accept"
   protocol     = "icmp"
+  limit        = "50/5s,5:packet"
   place_before = routeros_ip_firewall_filter.input_router_mgmt.id
 }
 
@@ -120,7 +110,19 @@ resource "routeros_ip_firewall_filter" "forward_invalid" {
   chain            = "forward"
   action           = "drop"
   connection_state = "invalid"
-  place_before     = routeros_ip_firewall_filter.forward_port_forwarding.id
+  place_before     = routeros_ip_firewall_filter.forward_switch_mgmt.id
+}
+
+# Moved down into the FORWARD block to maintain linked-list structure
+resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
+  chain             = "forward"
+  action            = "accept"
+  connection_state  = "new"
+  in_interface_list = module.mgmt_interface_list.name
+  dst_address_list  = routeros_ip_firewall_addr_list.switch.list
+  dst_port          = "80"
+  protocol          = "tcp"
+  place_before      = routeros_ip_firewall_filter.forward_port_forwarding.id
 }
 
 resource "routeros_ip_firewall_filter" "forward_port_forwarding" {
