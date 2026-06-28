@@ -4,6 +4,10 @@ terraform {
       source  = "terraform-routeros/routeros"
       version = "1.99.1"
     }
+    wireguard = {
+      source  = "OJFord/wireguard"
+      version = "0.4.0"
+    }
   }
   backend "local" {
     path = "${var.tfstate_location}/router.tfstate"

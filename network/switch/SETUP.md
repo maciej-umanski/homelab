@@ -1,4 +1,4 @@
-# Switch configuration
+# Setup
 
 ## Bootstrap
 
@@ -12,5 +12,4 @@
 
 ## Config
 
-Configure switch manually via SwOS using configuration described
-in [configuration file](../switch/CONFIGURATION.md)
+Configure switch manually via SwOS using configuration described in [configuration file](CONFIGURATION.md)

@@ -1,5 +1,5 @@
 locals {
-  vlan_name = "${var.name_prefix}${var.vlan_id}"
+  vlan_name = var.name_suffix != null ? "${var.name_prefix}${var.vlan_id}-${var.name_suffix}" : "${var.name_prefix}${var.vlan_id}"
 
   first_three_octets   = "${var.first_two_octets}.${var.vlan_id}"
   router_address       = "${local.first_three_octets}.1"

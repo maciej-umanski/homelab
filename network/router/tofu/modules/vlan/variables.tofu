@@ -14,6 +14,12 @@ variable "name_prefix" {
   default     = "vlan"
 }
 
+variable "name_suffix" {
+  type        = string
+  description = "The name of the VLAN interface"
+  default     = null
+}
+
 variable "first_two_octets" {
   type        = string
   description = "The first two octets of the IP address for the VLAN interface"

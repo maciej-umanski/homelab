@@ -81,3 +81,9 @@ variable "guest_wifi_pass" {
   description = "The password for the guest WiFi network"
   sensitive   = true
 }
+
+variable "wireguard_clients" {
+  type        = set(string)
+  description = "A set of WireGuard client names to create"
+  default     = []
+}
