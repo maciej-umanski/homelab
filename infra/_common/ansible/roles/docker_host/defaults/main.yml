@@ -1,0 +1,5 @@
+---
+docker_svc_uid: 2000
+docker_svc_gid: 2000
+docker_svc_user: dockersvc
+docker_svc_group: dockersvc

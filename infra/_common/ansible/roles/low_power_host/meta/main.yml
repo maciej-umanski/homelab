@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: low_power_host
+  author: homelab
+  description: Optimizes low-power devices with flash storage and limited RAM
+  license: MIT
+  platforms:
+    - name: Debian
+      versions:
+        - all

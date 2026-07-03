@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: nvidia_driver
+  author: homelab
+  description: Installs NVIDIA drivers and container toolkit on Ubuntu
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+        - oracular

@@ -1,0 +1,11 @@
+---
+- name: Disable laptop lid-switch sleep
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: "^#?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop:
+    - { key: 'HandleLidSwitch', value: '{{ "ignore" if lid_switch_ignore_internal else "suspend" }}' }
+    - { key: 'HandleLidSwitchExternalPower', value: '{{ "ignore" if lid_switch_ignore_external else "suspend" }}' }
+    - { key: 'HandleLidSwitchDocked', value: '{{ "ignore" if lid_switch_ignore_docked else "suspend" }}' }
+  notify: Restart systemd-logind

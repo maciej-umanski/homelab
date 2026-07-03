@@ -1,0 +1,10 @@
+---
+- name: Provision Compute
+  hosts: srv-compute-01
+  become: yes
+
+  roles:
+    - secure_ssh
+    - ubuntu_host
+    - laptop_host
+    - nvidia_driver

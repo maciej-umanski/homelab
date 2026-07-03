@@ -1,0 +1,6 @@
+---
+- name: Provision Proxmox Host
+  hosts: srv-pve-01
+
+  roles:
+    - proxmox_host

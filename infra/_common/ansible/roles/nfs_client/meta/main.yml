@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: nfs_client
+  author: homelab
+  description: Mounts NFS shares on a client
+  license: MIT
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all

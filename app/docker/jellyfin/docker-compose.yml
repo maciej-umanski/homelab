@@ -1,0 +1,17 @@
+services:
+
+  jellyfin:
+    container_name: jellyfin
+    image: ghcr.io/hotio/jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1005
+      - PGID=1005
+      - UMASK=002
+      - TZ=Europe/Warsaw
+    volumes:
+      - ${CONFIG_ROOT}/jellyfin:/config
+      - ${MEDIA_ROOT}/movies:/data/movies
+      - ${MEDIA_ROOT}/tvshows:/data/tvshows
+    ports:
+      - "8096:8096"
