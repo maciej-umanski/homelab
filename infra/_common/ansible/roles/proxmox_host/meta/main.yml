@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: proxmox_host
+  author: homelab
+  description: Configures Proxmox VE repositories and networking
+  license: MIT
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm

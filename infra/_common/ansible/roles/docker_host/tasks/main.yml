@@ -1,0 +1,78 @@
+---
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+    update_cache: yes
+
+- name: Add Docker repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: "https://download.docker.com/linux/debian"
+    suites: bookworm
+    components: stable
+    architectures: amd64
+    signed_by: "https://download.docker.com/linux/debian/gpg"
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Docker
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Ensure '{{ docker_svc_group }}' group exists
+  ansible.builtin.group:
+    name: "{{ docker_svc_group }}"
+    gid: "{{ docker_svc_gid }}"
+    state: present
+
+- name: Ensure '{{ docker_svc_user }}' user exists
+  ansible.builtin.user:
+    name: "{{ docker_svc_user }}"
+    uid: "{{ docker_svc_uid }}"
+    group: "{{ docker_svc_group }}"
+    groups: docker
+    shell: /bin/bash
+    create_home: yes
+    system: yes
+    state: present
+
+- name: Ensure /opt/docker exists
+  ansible.builtin.file:
+    path: /opt/docker
+    state: directory
+    owner: "{{ docker_svc_user }}"
+    group: "{{ docker_svc_group }}"
+    mode: '0755'
+
+- name: Set compose env vars for {{ docker_svc_user }}
+  ansible.builtin.blockinfile:
+    path: "/home/{{ docker_svc_user }}/.profile"
+    block: |
+      {% for key, value in docker_env_vars.items() %}
+      export {{ key }}={{ value }}
+      {% endfor %}
+    marker: "# {mark} ANSIBLE MANAGED - docker env"
+    owner: "{{ docker_svc_user }}"
+    group: "{{ docker_svc_group }}"
+    mode: '0644'
+    create: yes
+  when: docker_env_vars is defined and docker_env_vars | length > 0

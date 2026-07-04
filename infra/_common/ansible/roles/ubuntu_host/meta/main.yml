@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: ubuntu_host
+  author: homelab
+  description: Applies Netplan network configuration for Ubuntu Server
+  license: MIT
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+        - oracular

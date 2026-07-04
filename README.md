@@ -1,20 +1,41 @@
 # Homelab
 
-## Hardware
+A repository for documenting and managing my home lab infrastructure, including servers, networking equipment, and
+applications.
 
-### Networking
+```
+            _/\_                  
+            \  /                  
+             ||             ( )   
+      _______||______________|_______ 
+     /      _||_            _|_     /|
+    /_______\__/____________\_/____/ |
+   | +---------------------------+ | |
+   | | o                       o | | |
+   | | o   :   :   :   :   :   o | | |
+   | | o  (*) (*) (*) (*) (*)  o | | |
+   | +---------------------------+ | |
+   | | o         _   _         o | | |
+   | | o  [=]  ( ^ _ ^ )  [=]  o | | |
+   | | o         \___/         o | | |
+   | +---------------------------+ | |
+   | | o  ___             ___  o | | |
+   | | o |[_]| ( o _ o ) |[_]| o | | |
+   | | o |[_]|   \___/   |[_]| o | | |
+   | +---------------------------+ |/ 
+   '==============================='  
+      ||                     ||       
+     _||_                   _||_      
+    \____/                 \____/
+```
 
-|  Type  | Manufacturer |  Model  | Operating System |
-|:------:|:------------:|:-------:|:----------------:|
-| Router |   MikroTik   | hAP ax3 |    RouterOS 7    |
-| Switch |   MikroTik   | RB260GS |    SwOS 1.17     |
+## Contents
 
-### Servers
+* **app** - applications and services running in the home lab
+* **infra** - infrastructure configuration, including servers and networking equipment
+* **docs** - documentation for the home lab, including installation guides and inventory lists
 
-|         Type          | Manufacturer |      Model      |         CPU         |       GPU       |  RAM   | System Storage |     Data Storage     |            Operating System            |
-|:---------------------:|:------------:|:---------------:|:-------------------:|:---------------:|:------:|:--------------:|:--------------------:|:--------------------------------------:|
-|       Terminal        |      HP      |      T620       |    AMD GX-217GA     |       N/A       |  8 GB  |   16 GB eMMC   | 480 GB USB3 2.5" SSD |               Debian 13                |
-| Single Board Computer | Raspberry Pi |     Zero W      |  Broadcom BCM2835   |       N/A       | 512 MB | 64 GB microSD  |         N/A          | Raspberry Pi OS Lite 32bit (Debian 13) |
-|  Tiny USFF Computer   |    Lenovo    |    M900 Tiny    |   Intel I5-6500T    |       N/A       | 16 GB  |  256 GB NVME   |  1 TB SATA 2.5" HDD  |              Proxmox VE 9              |
-|        Laptop         |    Lenovo    |    Legion 5     |  AMD Ryzen 5 5600H  | RTX 3050 Mobile | 16 GB  |  240 GB NVME   |     480 GB NVME      |        Ubuntu Server 26.04 LTS         |
-|        Laptop         |     Dell     | Chromebook 3100 | Intel Celeron N4000 |       N/A       |  4 GB  |   32 GB eMMC   |         N/A          |              Proxmox VE 9              |
+## Docs
+
+* [Inventory](docs/INVENTORY.md)
+* [Installation](docs/INSTALLATION.md)

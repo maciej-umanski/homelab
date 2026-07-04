@@ -1,0 +1,23 @@
+---
+- name: Disable swap immediately
+  ansible.builtin.command: swapoff -a
+  changed_when: false
+  when: low_power_disable_swap | bool
+
+- name: Comment out swap in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*\sswap\s+.*)$'
+    replace: '# \1'
+  when: low_power_disable_swap | bool
+
+- name: Install log2ram for storage longevity
+  ansible.builtin.apt:
+    name: log2ram
+    state: present
+
+- name: Optimize swappiness for low-memory/flash nodes
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: "{{ low_power_swappiness }}"
+    state: present

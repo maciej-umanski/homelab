@@ -1,0 +1,4 @@
+---
+netplan_interface: eno1
+netplan_renderer: networkd
+netplan_dhcp: true

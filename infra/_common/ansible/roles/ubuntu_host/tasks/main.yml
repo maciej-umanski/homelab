@@ -1,0 +1,13 @@
+---
+- name: Apply Netplan configuration
+  ansible.builtin.copy:
+    content: |
+      network:
+        version: 2
+        renderer: {{ netplan_renderer }}
+        ethernets:
+          {{ netplan_interface }}:
+            dhcp4: {{ netplan_dhcp | lower }}
+    dest: /etc/netplan/99_netplan.yaml
+    mode: '0600'
+  notify: Apply netplan

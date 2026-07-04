@@ -1,0 +1,36 @@
+---
+- name: Deploy SSH authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ ssh_admin_user }}"
+    key: "{{ item }}"
+    state: present
+    exclusive: true
+  loop: "{{ ssh_authorized_keys }}"
+  when: ssh_authorized_keys | length > 0
+  notify: Restart SSH service
+
+- name: Disable SSH password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication {{ ssh_password_authentication }}'
+    state: present
+  register: sshd_config
+  notify: Restart SSH service
+
+- name: Disable SSH root login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin {{ ssh_permit_root_login }}'
+    state: present
+  register: sshd_root_config
+  notify: Restart SSH service
+
+- name: Grant passwordless sudo to {{ ssh_admin_user }}
+  ansible.builtin.copy:
+    content: "{{ ssh_admin_user }} ALL=(ALL) NOPASSWD: ALL\n"
+    dest: "/etc/sudoers.d/{{ ssh_admin_user }}"
+    mode: '0440'
+    validate: visudo -cf %s
+  when: ssh_passwordless_sudo | bool
