@@ -3,7 +3,6 @@ locals {
   vlan_name = "vlan99"
   router_ip = "10.10.99.1"
   switch_ip = "10.10.99.2"
-  port      = "ether5"
 }
 
 import {
@@ -38,7 +37,7 @@ import {
 
 import {
   id = "pvid=${local.vlan_id}"
-  to = module.vlan_mgmt.routeros_interface_bridge_port.this[local.port]
+  to = module.vlan_mgmt.routeros_interface_bridge_port.this["ether5"]
 }
 
 module "vlan_mgmt" {

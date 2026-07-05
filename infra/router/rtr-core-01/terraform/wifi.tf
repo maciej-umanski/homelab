@@ -5,12 +5,12 @@ locals {
 
 import {
   id = local.wifi_2_4_ghz
-  to = module.wifi_trusted.routeros_wifi.this[local.wifi_2_4_ghz]
+  to = module.wifi_trusted.routeros_wifi.this["wifi2"]
 }
 
 import {
   id = local.wifi_5_ghz
-  to = module.wifi_trusted.routeros_wifi.this[local.wifi_5_ghz]
+  to = module.wifi_trusted.routeros_wifi.this["wifi1"]
 }
 
 resource "routeros_wifi_steering" "this" {

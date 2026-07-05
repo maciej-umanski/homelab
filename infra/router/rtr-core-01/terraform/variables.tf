@@ -1,9 +1,3 @@
-variable "tfstate_location" {
-  type        = string
-  description = "The location where the Terraform state file will be stored"
-  default     = "./tfstate"
-}
-
 variable "routeros_url" {
   type        = string
   description = "The URL of the RouterOS device"

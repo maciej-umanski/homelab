@@ -9,8 +9,13 @@ terraform {
       version = "0.4.0"
     }
   }
-  backend "local" {
-    path = "${var.tfstate_location}/router.tfstate"
+  backend "http" {
+    address        = "http://10.10.30.247:3000/api/packages/maciej/terraform/state/rtr-core-01"
+    lock_address   = "http://10.10.30.247:3000/api/packages/maciej/terraform/state/rtr-core-01/lock"
+    unlock_address = "http://10.10.30.247:3000/api/packages/maciej/terraform/state/rtr-core-01/lock"
+    lock_method    = "POST"
+    unlock_method  = "DELETE"
+    username       = "maciej"
   }
 }
 

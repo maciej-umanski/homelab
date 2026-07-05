@@ -8,4 +8,5 @@
 *.tfvars.json
 *.tfvars
 
+**/.env
 **/wireguard_config/**
