@@ -66,10 +66,10 @@ variable "static_leases" {
   type = map(object({
     ip        = string
     mac       = string
-    hostnames = list(string)
+    hostnames = optional(list(string), [])
     wildcard  = optional(bool, false)
   }))
-  description = "Static DHCP leases (hostname -> { ip, mac, hostnames, wildcard })"
+  description = "Static DHCP leases (hostname -> { last ip octet, mac, hostnames, wildcard })"
   default     = {}
 }
 

@@ -62,7 +62,7 @@ resource "routeros_interface_bridge_port" "this" {
 resource "routeros_ip_dhcp_server_lease" "static" {
   for_each = var.static_leases
 
-  address     = each.value.ip
+  address     = "${local.first_three_octets}.${each.value.ip}"
   mac_address = each.value.mac
   server      = routeros_ip_dhcp_server.this.name
   comment     = each.key
@@ -82,7 +82,7 @@ resource "routeros_ip_dns_record" "host" {
   }
 
   name    = "${each.value.hostname}.${var.dns_domain}"
-  address = each.value.ip
+  address = "${local.first_three_octets}.${each.value.ip}"
   type    = "A"
 }
 
@@ -101,6 +101,6 @@ resource "routeros_ip_dns_record" "host_wildcard" {
   }
 
   regexp  = ".+\\.${each.value.hostname}\\.${replace(var.dns_domain, ".", "\\.")}"
-  address = each.value.ip
+  address = "${local.first_three_octets}.${each.value.ip}"
   type    = "A"
 }

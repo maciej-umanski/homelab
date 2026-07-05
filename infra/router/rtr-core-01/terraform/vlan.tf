@@ -13,9 +13,9 @@ module "vlan_interface_list" {
 module "vlan_trusted" {
   source = "../../../_common/terraform/routeros/vlan"
 
-  vlan_id      = 20
-  name_suffix  = "trusted"
-  bridge       = routeros_interface_bridge.this.name
+  vlan_id     = 20
+  name_suffix = "trusted"
+  bridge      = routeros_interface_bridge.this.name
 }
 
 module "vlan_servers" {
@@ -32,9 +32,10 @@ module "vlan_servers" {
 module "vlan_iot" {
   source = "../../../_common/terraform/routeros/vlan"
 
-  vlan_id      = 40
-  name_suffix  = "iot"
-  bridge       = routeros_interface_bridge.this.name
+  vlan_id       = 40
+  name_suffix   = "iot"
+  bridge        = routeros_interface_bridge.this.name
+  static_leases = var.iot_leases
 }
 
 module "vlan_guest" {
