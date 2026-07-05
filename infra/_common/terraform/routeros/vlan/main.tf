@@ -69,9 +69,38 @@ resource "routeros_ip_dhcp_server_lease" "static" {
 }
 
 resource "routeros_ip_dns_record" "host" {
-  for_each = var.static_leases
+  for_each = {
+    for item in flatten([
+      for lease_key, lease in var.static_leases : [
+        for hostname in lease.hostnames : {
+          lease_key = lease_key
+          hostname  = hostname
+          ip        = lease.ip
+        }
+      ]
+    ]) : "${item.lease_key}-${item.hostname}" => item
+  }
 
-  name    = "${each.key}.${var.dns_domain}"
+  name    = "${each.value.hostname}.${var.dns_domain}"
+  address = each.value.ip
+  type    = "A"
+}
+
+resource "routeros_ip_dns_record" "host_wildcard" {
+  for_each = {
+    for item in flatten([
+      for lease_key, lease in var.static_leases : [
+        for hostname in lease.hostnames : {
+          lease_key = lease_key
+          hostname  = hostname
+          ip        = lease.ip
+        }
+      ]
+      if lease.wildcard
+    ]) : "${item.lease_key}-${item.hostname}-wildcard" => item
+  }
+
+  regexp  = ".+\\.${each.value.hostname}\\.${replace(var.dns_domain, ".", "\\.")}"
   address = each.value.ip
   type    = "A"
 }

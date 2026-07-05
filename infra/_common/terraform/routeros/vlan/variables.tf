@@ -64,10 +64,12 @@ variable "untagged_ports" {
 
 variable "static_leases" {
   type = map(object({
-    ip  = string
-    mac = string
+    ip        = string
+    mac       = string
+    hostnames = list(string)
+    wildcard  = optional(bool, false)
   }))
-  description = "Static DHCP leases (hostname -> { ip, mac })"
+  description = "Static DHCP leases (hostname -> { ip, mac, hostnames, wildcard })"
   default     = {}
 }
 
