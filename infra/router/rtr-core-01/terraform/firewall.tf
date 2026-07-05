@@ -138,6 +138,17 @@ resource "routeros_ip_firewall_filter" "forward_trusted_to_servers" {
   connection_state = "new"
   in_interface     = module.vlan_trusted.name
   out_interface    = module.vlan_servers.name
+  place_before     = routeros_ip_firewall_filter.forward_trusted_to_iot.id
+}
+
+resource "routeros_ip_firewall_filter" "forward_trusted_to_iot" {
+  chain            = "forward"
+  action           = "accept"
+  connection_state = "new"
+  in_interface     = module.vlan_trusted.name
+  out_interface    = module.vlan_iot.name
+  dst_port         = "8008,8009,8443"
+  protocol         = "tcp"
   place_before     = routeros_ip_firewall_filter.forward_servers_to_iot.id
 }
 
