@@ -9,8 +9,9 @@
       - { src: "nas-core-01.home.arpa:/media", path: "/mnt/media" }
     docker_env_vars:
       CONFIG_ROOT: /mnt/usb/config
+      MEDIA_ROOT: /mnt/usb/media
       VAULT_ROOT: /mnt/vault
-      MEDIA_ROOT: /mnt/media
+      EXTERNAL_MEDIA_ROOT: /mnt/media
 
   roles:
     - secure_ssh
