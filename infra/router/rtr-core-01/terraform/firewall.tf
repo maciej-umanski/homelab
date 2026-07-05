@@ -147,6 +147,17 @@ resource "routeros_ip_firewall_filter" "forward_servers_to_iot" {
   connection_state = "new"
   in_interface     = module.vlan_servers.name
   out_interface    = module.vlan_iot.name
+  place_before     = routeros_ip_firewall_filter.forward_iot_to_servers.id
+}
+
+resource "routeros_ip_firewall_filter" "forward_iot_to_servers" {
+  chain            = "forward"
+  action           = "accept"
+  connection_state = "new"
+  in_interface     = module.vlan_iot.name
+  out_interface    = module.vlan_servers.name
+  dst_port         = "8096"
+  protocol         = "tcp"
   place_before     = routeros_ip_firewall_filter.forward_wireguard_to_servers.id
 }
 
