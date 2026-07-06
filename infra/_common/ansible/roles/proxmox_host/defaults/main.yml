@@ -1,3 +1,0 @@
----
-proxmox_enterprise_repo_file: /etc/apt/sources.list.d/pve-enterprise.list
-proxmox_no_subscription_bookworm: true

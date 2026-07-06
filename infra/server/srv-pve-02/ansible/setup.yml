@@ -1,8 +1,0 @@
----
-- name: Provision Proxmox Host
-  hosts: srv-pve-02
-
-  roles:
-    - proxmox_host
-    - low_power_host
-    - laptop_host

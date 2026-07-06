@@ -44,12 +44,25 @@
     gid: "{{ docker_svc_gid }}"
     state: present
 
+- name: Ensure 'video' group exists
+  ansible.builtin.group:
+    name: video
+    state: present
+
+- name: Ensure 'audio' group exists
+  ansible.builtin.group:
+    name: audio
+    state: present
+
 - name: Ensure '{{ docker_svc_user }}' user exists
   ansible.builtin.user:
     name: "{{ docker_svc_user }}"
     uid: "{{ docker_svc_uid }}"
     group: "{{ docker_svc_group }}"
-    groups: docker
+    groups:
+      - docker
+      - video
+      - audio
     shell: /bin/bash
     create_home: yes
     system: yes
@@ -76,3 +89,16 @@
     mode: '0644'
     create: yes
   when: docker_env_vars is defined and docker_env_vars | length > 0
+
+- name: Add docker aliases for {{ docker_svc_user }}
+  ansible.builtin.blockinfile:
+    path: "/home/{{ docker_svc_user }}/.profile"
+    block: |
+      alias docker-up='docker compose up -d'
+      alias docker-down='docker compose down'
+      alias docker-dir='cd /opt/docker'
+    marker: "# {mark} ANSIBLE MANAGED - docker aliases"
+    owner: "{{ docker_svc_user }}"
+    group: "{{ docker_svc_group }}"
+    mode: '0644'
+    create: yes

@@ -1,3 +1,0 @@
----
-nfs_version: nfs4
-nfs_mount_opts: rw,noatime
