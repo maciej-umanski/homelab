@@ -1,5 +1,5 @@
 variable "vlan_id" {
-  type        = string
+  type        = number
   description = "The ID of the VLAN interface"
 }
 

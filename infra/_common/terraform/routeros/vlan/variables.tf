@@ -1,5 +1,5 @@
 variable "vlan_id" {
-  type        = string
+  type        = number
   description = "The ID of the VLAN interface"
 }
 
@@ -71,10 +71,4 @@ variable "static_leases" {
   }))
   description = "Static DHCP leases (hostname -> { last ip octet, mac, hostnames, wildcard })"
   default     = {}
-}
-
-variable "dns_domain" {
-  type        = string
-  description = "DNS domain suffix for static records"
-  default     = "home.arpa"
 }

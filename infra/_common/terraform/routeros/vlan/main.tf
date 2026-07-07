@@ -81,7 +81,7 @@ resource "routeros_ip_dns_record" "host" {
     ]) : "${item.lease_key}-${item.hostname}" => item
   }
 
-  name    = "${each.value.hostname}.${var.dns_domain}"
+  name    = each.value.hostname
   address = "${local.first_three_octets}.${each.value.ip}"
   type    = "A"
 }
@@ -100,7 +100,7 @@ resource "routeros_ip_dns_record" "host_wildcard" {
     ]) : "${item.lease_key}-${item.hostname}-wildcard" => item
   }
 
-  regexp  = ".+\\.${each.value.hostname}\\.${replace(var.dns_domain, ".", "\\.")}"
+  regexp  = ".+\\.${each.value.hostname}"
   address = "${local.first_three_octets}.${each.value.ip}"
   type    = "A"
 }
