@@ -39,3 +39,8 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+### 6. Docker (`docker-compose.yml`)
+
+Change user to `dockersvc`, copy the `docker-compose.yml` and if needed `.env` file to the `/opt/docker` directory and
+execute `docker compose up -d` to start the services.

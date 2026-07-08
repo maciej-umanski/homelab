@@ -39,6 +39,7 @@ resource "local_sensitive_file" "wireguard_config" {
   for_each = local.clients
 
   filename = "${path.module}/wireguard_config/${each.key}.conf"
+  file_permission = "0600"
   content  = <<-EOT
     [Interface]
     PrivateKey = ${wireguard_asymmetric_key.this[each.key].private_key}

@@ -4,6 +4,7 @@ locals {
 
 resource "routeros_wifi_datapath" "this" {
   name             = "${local.wifi_name}-datapath"
+  bridge           = var.bridge
   client_isolation = var.client_isolation
 }
 

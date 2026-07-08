@@ -51,4 +51,5 @@ module "wifi_guest" {
   ssid              = var.guest_wifi_ssid
   pass              = var.guest_wifi_pass
   steering          = routeros_wifi_steering.this.name
+  client_isolation  = true
 }

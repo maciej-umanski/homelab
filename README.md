@@ -37,5 +37,4 @@ applications.
 
 ## Docs
 
-* [Inventory](docs/INVENTORY.md)
 * [Installation](docs/INSTALLATION.md)

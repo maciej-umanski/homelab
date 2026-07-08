@@ -102,5 +102,5 @@ resource "routeros_ip_dns_record" "host_wildcard" {
 
   regexp  = ".+\\.${each.value.hostname}"
   address = "${local.first_three_octets}.${each.value.ip}"
-  type    = "A"
+  type    = "FWD"
 }
