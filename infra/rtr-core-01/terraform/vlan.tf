@@ -13,10 +13,10 @@ module "vlan_interface_list" {
 module "vlan_trusted" {
   source = "../../_common/terraform/routeros/vlan"
 
-  vlan_id        = 20
-  name_suffix    = "trusted"
-  bridge         = routeros_interface_bridge.this.name
-  untagged_ports = [routeros_interface_ethernet.lan.name]
+  vlan_id      = 20
+  name_suffix  = "trusted"
+  bridge       = routeros_interface_bridge.this.name
+  tagged_ports = [routeros_interface_ethernet.switch.name]
 }
 
 module "vlan_servers" {
@@ -25,6 +25,7 @@ module "vlan_servers" {
   vlan_id        = 30
   name_suffix    = "servers"
   bridge         = routeros_interface_bridge.this.name
+  tagged_ports   = [routeros_interface_ethernet.switch.name]
   untagged_ports = [routeros_interface_ethernet.nas.name, routeros_interface_ethernet.srv.name]
   static_leases  = var.server_leases
 }

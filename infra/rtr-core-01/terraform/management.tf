@@ -55,6 +55,7 @@ module "vlan_mgmt" {
 
   vlan_id        = local.vlan_id
   bridge         = routeros_interface_bridge.this.name
+  tagged_ports   = [routeros_interface_ethernet.switch.name]
   untagged_ports = [routeros_interface_ethernet.mgmt.name]
 }
 

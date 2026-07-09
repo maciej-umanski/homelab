@@ -116,7 +116,18 @@ resource "routeros_ip_firewall_filter" "forward_invalid" {
   connection_state = "invalid"
   log              = true
   log_prefix       = "DROP-FWD-INVALID: "
-  place_before     = routeros_ip_firewall_filter.forward_port_forwarding.id
+  place_before     = routeros_ip_firewall_filter.forward_switch_mgmt.id
+}
+
+resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
+  chain             = "forward"
+  action            = "accept"
+  connection_state  = "new"
+  in_interface_list = module.mgmt_interface_list.name
+  dst_address_list  = routeros_ip_firewall_addr_list.switch.list
+  dst_port          = "80"
+  protocol          = "tcp"
+  place_before      = routeros_ip_firewall_filter.forward_port_forwarding.id
 }
 
 resource "routeros_ip_firewall_filter" "forward_port_forwarding" {

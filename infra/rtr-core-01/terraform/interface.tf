@@ -1,12 +1,6 @@
 locals {
-  ether1 = "ether1"
   ether3 = "ether3"
   ether4 = "ether4"
-}
-
-import {
-  id = local.ether1
-  to = routeros_interface_ethernet.lan
 }
 
 import {
@@ -17,11 +11,6 @@ import {
 import {
   id = local.ether4
   to = routeros_interface_ethernet.nas
-}
-
-resource "routeros_interface_ethernet" "lan" {
-  factory_name = local.ether1
-  name         = "ether1"
 }
 
 resource "routeros_interface_ethernet" "srv" {

@@ -82,6 +82,17 @@ variable "wireguard_clients" {
   default     = []
 }
 
+variable "management_leases" {
+  type = map(object({
+    ip        = number
+    mac       = string
+    hostnames = optional(list(string), [])
+    wildcard  = optional(bool, false)
+  }))
+  description = "Static DHCP leases for management (hostname -> { last ip octet, mac, hostnames, wildcard })"
+  default     = {}
+}
+
 variable "server_leases" {
   type = map(object({
     ip        = number
