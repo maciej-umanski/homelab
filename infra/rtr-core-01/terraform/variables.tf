@@ -1,79 +1,51 @@
-variable "routeros_url" {
-  type        = string
-  description = "The URL of the RouterOS device"
-  default     = "http://10.10.99.1"
-}
-
-variable "routeros_username" {
-  type        = string
-  description = "The username for the RouterOS device"
-  default     = "admin"
-}
-
-variable "routeros_insecure" {
-  type        = bool
-  description = "Whether to skip TLS verification for the RouterOS device"
-  default     = true
-}
-
-variable "routeros_password" {
-  type        = string
-  description = "The password for the RouterOS device"
+variable "routeros" {
+  type = object({
+    url      = string
+    username = optional(string, "admin")
+    password = string
+    insecure = optional(bool, true)
+  })
+  description = "RouterOS connection settings"
   sensitive   = true
 }
 
-variable "pppoe_username" {
-  type        = string
-  description = "The username for the PPPoE connection"
+variable "pppoe" {
+  type = object({
+    vlan_id   = number
+    username  = string
+    password  = string
+    interface = string
+  })
+  description = "PPPoE WAN connection settings"
   sensitive   = true
 }
 
-variable "pppoe_password" {
-  type        = string
-  description = "The password for the PPPoE connection"
-  sensitive   = true
+variable "guest_network" {
+  type = object({
+    ssid = string
+    pass = string
+  })
+  description = "Guest WiFi network (isolated, single-band 5 GHz virtual AP)"
 }
 
-variable "pppoe_vlan_id" {
-  type        = number
-  description = "The VLAN ID for the PPPoE connection"
-  sensitive   = true
-}
-
-variable "trusted_wifi_ssid" {
-  type        = string
-  description = "The SSID for the main WiFi network"
-  sensitive   = true
-}
-
-variable "trusted_wifi_pass" {
-  type        = string
-  description = "The password for the main WiFi network"
-  sensitive   = true
-}
-
-variable "iot_wifi_ssid" {
-  type        = string
-  description = "The SSID for the IoT WiFi network"
-  sensitive   = true
-}
-
-variable "iot_wifi_pass" {
-  type        = string
-  description = "The password for the IoT WiFi network"
-  sensitive   = true
-}
-
-variable "guest_wifi_ssid" {
-  type        = string
-  description = "The SSID for the guest WiFi network"
-  sensitive   = true
-}
-
-variable "guest_wifi_pass" {
-  type        = string
-  description = "The password for the guest WiFi network"
-  sensitive   = true
+variable "main_network" {
+  type = object({
+    ssid   = string
+    hidden = optional(bool, false)
+    vlans = map(object({
+      id             = number
+      ppsk           = optional(string)
+      tagged_ports   = optional(list(string), [])
+      untagged_ports = optional(list(string), [])
+      leases = optional(map(object({
+        ip        = number
+        mac       = string
+        hostnames = optional(list(string), [])
+        wildcard  = optional(bool, false)
+      })), {})
+    }))
+  })
+  description = "Main unified WiFi network with per-segment VLAN configuration and PPSK dynamic VLAN assignment"
 }
 
 variable "wireguard_clients" {
@@ -82,33 +54,10 @@ variable "wireguard_clients" {
   default     = []
 }
 
-variable "management_leases" {
-  type = map(object({
-    ip        = number
-    mac       = string
-    hostnames = optional(list(string), [])
-    wildcard  = optional(bool, false)
-  }))
-  description = "Static DHCP leases for management (hostname -> { last ip octet, mac, hostnames, wildcard })"
-  default     = {}
-}
-
-variable "server_leases" {
-  type = map(object({
-    ip        = number
-    mac       = string
-    hostnames = optional(list(string), [])
-    wildcard  = optional(bool, false)
-  }))
-  description = "Static DHCP leases for servers (hostname -> { last ip octet, mac, hostnames, wildcard })"
-  default     = {}
-}
-
-variable "iot_leases" {
-  type = map(object({
-    ip        = number
-    mac       = string
-  }))
-  description = "Static DHCP leases for iot devices (hostname -> { last ip octet, mac })"
-  default     = {}
+variable "switch_config" {
+  type = object({
+    ip        = string
+    interface = string
+  })
+  description = "Switch configuration for the main network (IP address and interface)"
 }

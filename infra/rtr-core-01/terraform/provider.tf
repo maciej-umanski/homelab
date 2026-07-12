@@ -15,8 +15,8 @@ terraform {
 }
 
 provider "routeros" {
-  hosturl  = var.routeros_url
-  username = var.routeros_username
-  password = var.routeros_password
-  insecure = var.routeros_insecure
+  hosturl  = var.routeros.url
+  username = var.routeros.username
+  password = var.routeros.password
+  insecure = var.routeros.insecure
 }

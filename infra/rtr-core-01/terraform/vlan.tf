@@ -1,48 +1,25 @@
+module "vlan" {
+  source = "../../_common/terraform/routeros/vlan"
+
+  for_each = var.main_network.vlans
+
+  name_suffix    = each.key
+  vlan_id        = each.value.id
+  tagged_ports   = each.value.tagged_ports
+  untagged_ports = each.value.untagged_ports
+  static_leases  = each.value.leases
+  bridge         = routeros_interface_bridge.this.name
+}
+
 module "vlan_interface_list" {
   source = "../../_common/terraform/routeros/interface_list"
 
   name = "lan"
   members = [
-    module.vlan_trusted.name,
-    module.vlan_servers.name,
-    module.vlan_iot.name,
-    module.vlan_guest.name,
+    module.vlan["trusted"].name,
+    module.vlan["servers"].name,
+    module.vlan["iot"].name,
+    module.vlan["guest"].name,
+    module.vlan["gaming"].name
   ]
-}
-
-module "vlan_trusted" {
-  source = "../../_common/terraform/routeros/vlan"
-
-  vlan_id      = 20
-  name_suffix  = "trusted"
-  bridge       = routeros_interface_bridge.this.name
-  tagged_ports = [routeros_interface_ethernet.switch.name]
-}
-
-module "vlan_servers" {
-  source = "../../_common/terraform/routeros/vlan"
-
-  vlan_id        = 30
-  name_suffix    = "servers"
-  bridge         = routeros_interface_bridge.this.name
-  tagged_ports   = [routeros_interface_ethernet.switch.name]
-  untagged_ports = [routeros_interface_ethernet.nas.name, routeros_interface_ethernet.srv.name]
-  static_leases  = var.server_leases
-}
-
-module "vlan_iot" {
-  source = "../../_common/terraform/routeros/vlan"
-
-  vlan_id       = 40
-  name_suffix   = "iot"
-  bridge        = routeros_interface_bridge.this.name
-  static_leases = var.iot_leases
-}
-
-module "vlan_guest" {
-  source = "../../_common/terraform/routeros/vlan"
-
-  vlan_id     = 50
-  name_suffix = "guest"
-  bridge      = routeros_interface_bridge.this.name
 }

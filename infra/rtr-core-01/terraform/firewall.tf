@@ -29,13 +29,13 @@ resource "routeros_ip_firewall_filter" "input_icmp" {
   action       = "accept"
   protocol     = "icmp"
   limit        = "50/5s,5:packet"
-  place_before = routeros_ip_firewall_filter.input_router_mgmt.id
+  place_before = routeros_ip_firewall_filter.input_router_management.id
 }
 
-resource "routeros_ip_firewall_filter" "input_router_mgmt" {
+resource "routeros_ip_firewall_filter" "input_router_management" {
   chain             = "input"
   action            = "accept"
-  in_interface_list = module.mgmt_interface_list.name
+  in_interface_list = module.management_interface_list.name
   dst_port          = "8291,22,80,443"
   protocol          = "tcp"
   place_before      = routeros_ip_firewall_filter.input_dns_udp.id
@@ -116,14 +116,14 @@ resource "routeros_ip_firewall_filter" "forward_invalid" {
   connection_state = "invalid"
   log              = true
   log_prefix       = "DROP-FWD-INVALID: "
-  place_before     = routeros_ip_firewall_filter.forward_switch_mgmt.id
+  place_before     = routeros_ip_firewall_filter.forward_switch_management.id
 }
 
-resource "routeros_ip_firewall_filter" "forward_switch_mgmt" {
+resource "routeros_ip_firewall_filter" "forward_switch_management" {
   chain             = "forward"
   action            = "accept"
   connection_state  = "new"
-  in_interface_list = module.mgmt_interface_list.name
+  in_interface_list = module.management_interface_list.name
   dst_address_list  = routeros_ip_firewall_addr_list.switch.list
   dst_port          = "80"
   protocol          = "tcp"
@@ -141,8 +141,8 @@ resource "routeros_ip_firewall_filter" "forward_trusted_to_servers" {
   chain            = "forward"
   action           = "accept"
   connection_state = "new"
-  in_interface     = module.vlan_trusted.name
-  out_interface    = module.vlan_servers.name
+  in_interface     = module.vlan["trusted"].name
+  out_interface    = module.vlan["servers"].name
   place_before     = routeros_ip_firewall_filter.forward_trusted_to_iot.id
 }
 
@@ -150,8 +150,8 @@ resource "routeros_ip_firewall_filter" "forward_trusted_to_iot" {
   chain            = "forward"
   action           = "accept"
   connection_state = "new"
-  in_interface     = module.vlan_trusted.name
-  out_interface    = module.vlan_iot.name
+  in_interface     = module.vlan["trusted"].name
+  out_interface    = module.vlan["iot"].name
   dst_port         = "8008,8009,8443"
   protocol         = "tcp"
   place_before     = routeros_ip_firewall_filter.forward_servers_to_iot.id
@@ -161,8 +161,8 @@ resource "routeros_ip_firewall_filter" "forward_servers_to_iot" {
   chain            = "forward"
   action           = "accept"
   connection_state = "new"
-  in_interface     = module.vlan_servers.name
-  out_interface    = module.vlan_iot.name
+  in_interface     = module.vlan["servers"].name
+  out_interface    = module.vlan["iot"].name
   place_before     = routeros_ip_firewall_filter.forward_iot_to_servers.id
 }
 
@@ -170,8 +170,8 @@ resource "routeros_ip_firewall_filter" "forward_iot_to_servers" {
   chain            = "forward"
   action           = "accept"
   connection_state = "new"
-  in_interface     = module.vlan_iot.name
-  out_interface    = module.vlan_servers.name
+  in_interface     = module.vlan["iot"].name
+  out_interface    = module.vlan["servers"].name
   dst_port         = "8096"
   protocol         = "tcp"
   place_before     = routeros_ip_firewall_filter.forward_wireguard_to_servers.id
@@ -182,7 +182,7 @@ resource "routeros_ip_firewall_filter" "forward_wireguard_to_servers" {
   action           = "accept"
   connection_state = "new"
   in_interface     = routeros_interface_wireguard.this.name
-  out_interface    = module.vlan_servers.name
+  out_interface    = module.vlan["servers"].name
   place_before     = routeros_ip_firewall_filter.forward_wireguard_to_iot.id
 }
 
@@ -191,7 +191,7 @@ resource "routeros_ip_firewall_filter" "forward_wireguard_to_iot" {
   action           = "accept"
   connection_state = "new"
   in_interface     = routeros_interface_wireguard.this.name
-  out_interface    = module.vlan_iot.name
+  out_interface    = module.vlan["iot"].name
   place_before     = routeros_ip_firewall_filter.forward_wireguard_to_wan.id
 }
 

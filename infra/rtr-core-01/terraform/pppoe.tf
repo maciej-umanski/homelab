@@ -1,28 +1,14 @@
-locals {
-  pppoe_interface = "ether2"
-}
-
-import {
-  id = local.pppoe_interface
-  to = routeros_interface_ethernet.wan
-}
-
-resource "routeros_interface_ethernet" "wan" {
-  factory_name = local.pppoe_interface
-  name         = "ether2"
-}
-
 resource "routeros_interface_vlan" "pppoe" {
   name      = "pppoe-vlan"
-  vlan_id   = var.pppoe_vlan_id
-  interface = routeros_interface_ethernet.wan.name
+  vlan_id   = var.pppoe.vlan_id
+  interface = var.pppoe.interface
 }
 
 resource "routeros_interface_pppoe_client" "this" {
   name              = "pppoe-client"
   interface         = routeros_interface_vlan.pppoe.name
-  user              = var.pppoe_username
-  password          = var.pppoe_password
+  user              = var.pppoe.username
+  password          = var.pppoe.password
   add_default_route = true
   use_peer_dns      = false
   disabled          = false
