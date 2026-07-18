@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     volumes:
       - ${CONFIG_ROOT}/gitea:/etc/gitea
-      - ${VAULT_ROOT}/docker/gitea:/data
+      - ${VAULT_ROOT}/gitea:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:

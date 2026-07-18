@@ -7,7 +7,4 @@ services:
     ports:
       - "3011:8080"
     volumes:
-      - open-webui:/app/backend/data
-
-volumes:
-  open-webui:
+      - ${CONFIG_ROOT}/open-webui:/app/backend/data
