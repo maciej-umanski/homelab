@@ -1,0 +1,52 @@
+---
+- name: Provision Core
+  hosts: srv-core-01
+  become: yes
+
+  vars:
+    disk_mounts:
+      - { src: "/dev/sda1", path: "/mnt/ssd", fstype: ext4, opts: "defaults,noatime" }
+      - { src: "nas-core-01.home.arpa:/vault", path: "/mnt/vault", fstype: nfs4, opts: "rw,noatime" }
+      - { src: "nas-core-01.home.arpa:/media", path: "/mnt/media", fstype: nfs4, opts: "rw,noatime" }
+    apt_packages:
+      - vim
+      - cockpit
+      - cockpit-machines
+      - tuned
+      - pcp
+      - intel-gpu-tools
+      - alsa-utils
+      - nfs-common
+    docker_env_vars:
+      CONFIG_ROOT: /mnt/ssd/config
+      MEDIA_ROOT: /mnt/ssd/media
+      VAULT_ROOT: /mnt/vault
+      EXTERNAL_MEDIA_ROOT: /mnt/media
+
+  roles:
+    - secure_ssh
+    - docker_host
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.apt:
+        name: "{{ apt_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Mount disks
+      ansible.posix.mount:
+        path: "{{ item.path }}"
+        src: "{{ item.src }}"
+        fstype: "{{ item.fstype }}"
+        opts: "{{ item.opts }}"
+        state: mounted
+      loop: "{{ disk_mounts }}"
+
+    - name: Unmute and configure audio output
+      ansible.builtin.command:
+        cmd: "amixer -c 0 set {{ item.name }} {{ item.value }}"
+      loop:
+        - { name: Master, value: "80% unmute" }
+        - { name: Headphone, value: unmute }
+        - { name: Speaker, value: unmute }

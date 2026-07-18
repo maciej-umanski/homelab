@@ -1,0 +1,36 @@
+---
+- name: Provision Rpi
+  hosts: srv-rpi-01
+  become: yes
+
+  vars:
+    apt_packages:
+      - vim
+
+  roles:
+    - secure_ssh
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.apt:
+        name: "{{ apt_packages }}"
+        state: present
+
+    - name: Disable WiFi via device tree overlay
+      ansible.builtin.lineinfile:
+        path: /boot/firmware/config.txt
+        line: dtoverlay=disable-wifi
+        state: present
+      notify: reboot
+
+    - name: Disable Bluetooth via device tree overlay
+      ansible.builtin.lineinfile:
+        path: /boot/firmware/config.txt
+        line: dtoverlay=disable-bt
+        state: present
+      notify: reboot
+
+  handlers:
+    - name: reboot
+      ansible.builtin.reboot:
+        reboot_timeout: 300

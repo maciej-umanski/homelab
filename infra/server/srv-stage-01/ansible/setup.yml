@@ -1,23 +1,23 @@
 ---
-- name: Provision Core
-  hosts: srv-core-01
+- name: Provision Stage
+  hosts: srv-stage-01
   become: yes
 
   vars:
     disk_mounts:
-      - { src: "/dev/sda1", path: "/mnt/ssd", fstype: ext4, opts: "defaults,noatime" }
-      - { src: "/dev/sdb1", path: "/mnt/usb", fstype: ext4, opts: "defaults,noatime" }
+      - { src: "/dev/sdb1", path: "/mnt/ssd", fstype: ext4, opts: "defaults,noatime" }
       - { src: "nas-core-01.home.arpa:/vault", path: "/mnt/vault", fstype: nfs4, opts: "rw,noatime" }
       - { src: "nas-core-01.home.arpa:/media", path: "/mnt/media", fstype: nfs4, opts: "rw,noatime" }
     apt_packages:
       - vim
       - cockpit
-      - cockpit-machines
       - tuned
       - pcp
-      - intel-gpu-tools
       - alsa-utils
       - nfs-common
+      - radeontop
+    docker_data_root: /mnt/ssd/var/docker
+    containerd_data_root: /mnt/ssd/var/containerd
     docker_env_vars:
       CONFIG_ROOT: /mnt/ssd/config
       MEDIA_ROOT: /mnt/ssd/media
@@ -46,8 +46,26 @@
 
     - name: Unmute and configure audio output
       ansible.builtin.command:
-        cmd: "amixer -c 0 set {{ item.name }} {{ item.value }}"
+        cmd: "amixer -c 1 set {{ item.name }} {{ item.value }}"
       loop:
         - { name: Master, value: "80% unmute" }
         - { name: Headphone, value: unmute }
         - { name: Speaker, value: unmute }
+
+    - name: Enable amdgpu driver for Kabini GPU
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX='
+        line: 'GRUB_CMDLINE_LINUX="amdgpu.cik_support=1 radeon.si_support=0 radeon.cik_support=0"'
+        state: present
+      notify: Update grub
+
+  handlers:
+    - name: Update grub
+      ansible.builtin.command:
+        cmd: update-grub
+      notify: reboot
+
+    - name: reboot
+      ansible.builtin.reboot:
+        reboot_timeout: 300
