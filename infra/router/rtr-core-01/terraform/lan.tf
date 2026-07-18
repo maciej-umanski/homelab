@@ -1,5 +1,14 @@
+locals {
+  bridge    = "bridge"
+}
+
+resource "routeros_interface_bridge" "this" {
+  name           = local.bridge
+  vlan_filtering = true
+}
+
 module "vlan" {
-  source = "../../_common/terraform/routeros/vlan"
+  source = "../../../_common/terraform/routeros/vlan"
 
   for_each = var.main_network.vlans
 
@@ -12,7 +21,7 @@ module "vlan" {
 }
 
 module "vlan_interface_list" {
-  source = "../../_common/terraform/routeros/interface_list"
+  source = "../../../_common/terraform/routeros/interface_list"
 
   name = "lan"
   members = [
