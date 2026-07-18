@@ -1,0 +1,18 @@
+services:
+
+  arcane:
+    image: ghcr.io/getarcaneapp/manager:latest
+    container_name: arcane
+    ports:
+      - '3552:3552'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CONFIG_ROOT}/arcane:/app/data
+      - /opt/docker:/app/data/projects
+    environment:
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - TZ=Europe/Warsaw
+      - ANALYTICS_DISABLED=true
+    cgroup: host
+    restart: unless-stopped
