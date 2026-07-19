@@ -4,6 +4,11 @@ import {
 }
 
 import {
+  id = "interface=ether1"
+  to = routeros_interface_bridge_port.lan["ether1"]
+}
+
+import {
   id = "interface=ether2"
   to = routeros_interface_bridge_port.lan["ether2"]
 }

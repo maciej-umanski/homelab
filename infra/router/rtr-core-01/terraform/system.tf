@@ -1,15 +1,15 @@
 resource "routeros_system_identity" "this" {
-  name = "rtr-core-01"
+  name = var.system.router_name
 }
 
 resource "routeros_system_clock" "this" {
-  time_zone_name       = "Europe/Warsaw"
+  time_zone_name       = var.system.timezone
   time_zone_autodetect = false
 }
 
 resource "routeros_system_ntp_client" "this" {
   enabled = true
-  servers = ["time.cloudflare.com"]
+  servers = [var.system.ntp_server]
 }
 
 resource "routeros_ip_cloud" "this" {

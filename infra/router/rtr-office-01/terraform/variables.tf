@@ -1,3 +1,13 @@
+variable "system" {
+  type = object({
+    router_name          = string
+    firewall_log_enabled = optional(bool, false)
+    timezone             = optional(string, "Europe/Warsaw")
+    ntp_server           = optional(string, "time.cloudflare.com")
+  })
+  description = "System settings"
+}
+
 variable "routeros" {
   type = object({
     url      = string

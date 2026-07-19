@@ -1,7 +1,8 @@
 locals {
-  bridge    = "bridge"
-  lan_ports = ["ether2", "ether3"]
-  router_ip = "10.20.30.1"
+  bridge             = "bridge"
+  lan_ports          = ["ether1", "ether2", "ether3"]
+  first_three_octets = "10.20.30"
+  router_ip          = "${local.first_three_octets}.1"
 }
 
 
@@ -17,9 +18,9 @@ resource "routeros_interface_bridge_port" "lan" {
 }
 
 module "ip_config" {
-  source             = "../../../_common/terraform/routeros/ip_config"
+  source = "../../../_common/terraform/routeros/ip_config"
 
-  first_three_octets = "10.20.30"
+  first_three_octets = local.first_three_octets
   interface          = routeros_interface_bridge.this.name
 }
 

@@ -11,6 +11,7 @@ resource "routeros_interface_wireless" "uplink" {
   ssid             = var.uplink.ssid
   security_profile = routeros_interface_wireless_security_profiles.uplink.name
   disabled         = false
+  band             = "2ghz-b/g/n"
 }
 
 resource "routeros_ip_dhcp_client" "uplink" {
