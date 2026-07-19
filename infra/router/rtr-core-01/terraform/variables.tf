@@ -1,3 +1,10 @@
+variable "system" {
+  type = object({
+    firewall_log_enabled = optional(bool, false)
+  })
+  description = "System settings"
+}
+
 variable "routeros" {
   type = object({
     url      = string

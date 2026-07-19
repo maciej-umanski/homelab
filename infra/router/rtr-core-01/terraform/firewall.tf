@@ -19,7 +19,7 @@ resource "routeros_ip_firewall_filter" "input_invalid" {
   chain            = "input"
   action           = "drop"
   connection_state = "invalid"
-  log              = true
+  log              = var.system.firewall_log_enabled
   log_prefix       = "DROP-INPUT-INVALID: "
   place_before     = routeros_ip_firewall_filter.input_icmp.id
 }
@@ -87,7 +87,7 @@ resource "routeros_ip_firewall_filter" "input_wireguard_router" {
 resource "routeros_ip_firewall_filter" "input_drop_all" {
   chain        = "input"
   action       = "drop"
-  log          = true
+  log          = var.system.firewall_log_enabled
   log_prefix   = "DROP-INPUT: "
   place_before = routeros_ip_firewall_filter.forward_fasttrack.id
 }
@@ -114,7 +114,7 @@ resource "routeros_ip_firewall_filter" "forward_invalid" {
   chain            = "forward"
   action           = "drop"
   connection_state = "invalid"
-  log              = true
+  log              = var.system.firewall_log_enabled
   log_prefix       = "DROP-FWD-INVALID: "
   place_before     = routeros_ip_firewall_filter.forward_switch_management.id
 }
@@ -216,6 +216,6 @@ resource "routeros_ip_firewall_filter" "forward_lan_to_wan" {
 resource "routeros_ip_firewall_filter" "forward_drop_all" {
   chain      = "forward"
   action     = "drop"
-  log        = true
+  log        = var.system.firewall_log_enabled
   log_prefix = "DROP-FWD: "
 }
