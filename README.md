@@ -39,3 +39,4 @@ applications.
 
 * [Inventory](docs/INVENTORY.md)
 * [Installation](docs/INSTALLATION.md)
+* [Maintenance](docs/MAINTENANCE.md)

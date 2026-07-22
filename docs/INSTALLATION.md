@@ -19,7 +19,7 @@ Manually perform described installation steps on each device.
 
 Run from each device's terminal.
 
-### 4. Ansible (`ansible`)
+### 3. Ansible (`ansible`)
 
 The first run requires SSH password — subsequent runs use the deployed SSH key.
 
@@ -29,7 +29,7 @@ ansible-playbook setup.yml \
   --ask-become-pass # if not root or passwordless sudo
 ```
 
-### 5. Terraform (`terraform`)
+### 4. Terraform (`terraform`)
 
 Create `terraform.tfvars` in each device's directory based on the `variables.tf` file. Then apply infrastructure
 configuration using:
@@ -40,7 +40,7 @@ terraform plan
 terraform apply
 ```
 
-### 6. Docker (`docker-compose.yml`)
+### 5. Docker (`docker compose`)
 
-Change user to `dockersvc`, copy the `docker-compose.yml` and if needed `.env` file to the `/opt/docker` directory and
+Change user to `dockersvc`, copy the `docker-compose.yml` and (if needed) `.env` files to `/opt/docker/<app>/` and
 execute `docker compose up -d` to start the services.
