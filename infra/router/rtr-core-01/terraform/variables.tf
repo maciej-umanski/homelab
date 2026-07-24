@@ -59,9 +59,10 @@ variable "main_network" {
 }
 
 variable "wireguard_clients" {
-  type        = set(string)
-  description = "A set of WireGuard client names to create"
-  default     = []
+  type = map(object({
+    ip = number
+  }))
+  description = "WireGuard clients configuration (IP address assignment)"
 }
 
 variable "switch_config" {

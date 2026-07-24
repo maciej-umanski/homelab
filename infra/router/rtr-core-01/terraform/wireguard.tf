@@ -1,13 +1,8 @@
 locals {
   wg_subnet_prefix = "10.10.80"
+  wg_subnet_mask   = 32
   wg_address       = "${local.wg_subnet_prefix}.1"
   wg_address_cidr  = "${local.wg_address}/24"
-
-  clients = {
-    for idx, client in sort(tolist(var.wireguard_clients)) : client => {
-      ip_address = "${local.wg_subnet_prefix}.${idx + 2}/32"
-    }
-  }
 }
 
 resource "routeros_interface_wireguard" "this" {
@@ -22,28 +17,28 @@ resource "routeros_ip_address" "wg_ip" {
 }
 
 resource "wireguard_asymmetric_key" "this" {
-  for_each = local.clients
+  for_each = var.wireguard_clients
 }
 
 resource "routeros_interface_wireguard_peer" "this" {
-  for_each = local.clients
+  for_each = var.wireguard_clients
 
   name       = each.key
   interface  = routeros_interface_wireguard.this.name
   public_key = wireguard_asymmetric_key.this[each.key].public_key
 
-  allowed_address = [each.value.ip_address]
+  allowed_address = ["${local.wg_subnet_prefix}.${each.value.ip}/${local.wg_subnet_mask}"]
 }
 
 resource "local_sensitive_file" "wireguard_config" {
-  for_each = local.clients
+  for_each = var.wireguard_clients
 
   filename        = "${path.module}/wireguard_config/${each.key}.conf"
   file_permission = "0600"
   content         = <<-EOT
     [Interface]
     PrivateKey = ${wireguard_asymmetric_key.this[each.key].private_key}
-    Address = ${each.value.ip_address}
+    Address = "${local.wg_subnet_prefix}.${each.value.ip}/${local.wg_subnet_mask}"
     DNS = ${local.wg_address}
 
     [Peer]
