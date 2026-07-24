@@ -37,3 +37,17 @@ import {
   id = "pvid=${local.vlan_id}"
   to = module.vlan["management"].routeros_interface_bridge_port.this["ether5"]
 }
+
+import {
+  id = "admin"
+  to = routeros_system_user.admin
+}
+
+import {
+  to = routeros_system_certificate.local-root-ca-cert
+  id = "*1"
+}
+import {
+  to = routeros_system_certificate.webfig
+  id = "*2"
+}
