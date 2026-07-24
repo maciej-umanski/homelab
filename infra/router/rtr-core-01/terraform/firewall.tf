@@ -29,14 +29,37 @@ resource "routeros_ip_firewall_filter" "input_icmp" {
   action       = "accept"
   protocol     = "icmp"
   limit        = "50/5s,5:packet"
-  place_before = routeros_ip_firewall_filter.input_router_management.id
+  place_before = routeros_ip_firewall_filter.input_ssh_ratelimit.id
+}
+
+resource "routeros_ip_firewall_filter" "input_ssh_ratelimit" {
+  chain             = "input"
+  action            = "accept"
+  protocol          = "tcp"
+  dst_port          = "22"
+  in_interface_list = module.management_interface_list.name
+  connection_state  = "new"
+  limit             = "3/1m,1:packet"
+  place_before      = routeros_ip_firewall_filter.input_ssh_ratelimit_drop.id
+}
+
+resource "routeros_ip_firewall_filter" "input_ssh_ratelimit_drop" {
+  chain             = "input"
+  action            = "drop"
+  protocol          = "tcp"
+  dst_port          = "22"
+  in_interface_list = module.management_interface_list.name
+  connection_state  = "new"
+  log               = var.system.firewall_log_enabled
+  log_prefix        = "DROP-INPUT-SSH-BRUTE: "
+  place_before      = routeros_ip_firewall_filter.input_router_management.id
 }
 
 resource "routeros_ip_firewall_filter" "input_router_management" {
   chain             = "input"
   action            = "accept"
   in_interface_list = module.management_interface_list.name
-  dst_port          = "8291,22,80,443"
+  dst_port          = "8291,22,443"
   protocol          = "tcp"
   place_before      = routeros_ip_firewall_filter.input_dns_udp.id
 }

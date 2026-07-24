@@ -10,8 +10,8 @@ variable "system" {
 
 variable "routeros" {
   type = object({
-    url      = string
-    username = optional(string, "admin")
+    url      = optional(string, "https://10.10.99.1")
+    username = optional(string, "sysadmin")
     password = string
     insecure = optional(bool, true)
   })

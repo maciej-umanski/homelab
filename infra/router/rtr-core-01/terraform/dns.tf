@@ -2,7 +2,7 @@ resource "routeros_ip_dns" "this" {
   allow_remote_requests = true
   servers               = ["1.1.1.1", "1.0.0.1"]
   mdns_repeat_ifaces    = [module.vlan["servers"].name, module.vlan["trusted"].name, module.vlan["iot"].name]
-  cache_size            = 120000
+  cache_size            = 200000
 }
 
 resource "routeros_ip_dns_adlist" "this" {

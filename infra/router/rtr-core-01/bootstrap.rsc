@@ -1,3 +1,6 @@
+# Create sysadmin user
+/user add name=sysadmin group=full password="{change_me}"
+
 # Create bridge with VLAN filtering
 /interface bridge add name=bridge vlan-filtering=yes
 
@@ -15,3 +18,11 @@
 
 # Bridge VLAN config
 /interface bridge vlan add bridge=bridge vlan-ids=99 tagged=bridge untagged=ether5
+
+# Configure local CA and sign the root certificate
+/certificate/add name=local-root-cert common-name=local-cert key-size=prime256v1 key-usage=key-cert-sign,crl-sign trusted=yes
+/certificate/sign local-root-cert
+/certificate/add name=webfig common-name=10.10.99.1 country=PL locality=WAW organization=MACIEJ-UMANSKI unit=HOME days-valid=3650 key-size=prime256v1 key-usage=key-cert-sign,crl-sign,digital-signature,key-agreement,tls-server trusted=yes
+/certificate/sign ca=local-root-cert webfig
+/ip/service/set www-ssl certificate=webfig disabled=no
+/ip/service/enable www-ssl
