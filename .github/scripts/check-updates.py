@@ -28,13 +28,6 @@ def tag_to_pattern(tag):
     return '^' + re.sub(r'\d+', r'\\d+', re.escape(tag)) + '$'
 
 
-def tag_to_glob_filter(tag):
-    result = re.sub(r'\d+\.\d+\.\d+', '*', tag)
-    if result == '*':
-        return None
-    return result
-
-
 def discover_services(base_dir):
     services = []
     for compose_file in sorted(base_dir.glob('*/docker-compose.yml')):
@@ -56,12 +49,9 @@ def discover_services(base_dir):
     return services
 
 
-def get_tags(image, filter_glob=None):
-    cmd = ['regctl', 'tag', 'ls', image]
-    if filter_glob:
-        cmd.extend(['--filter', filter_glob])
+def get_tags(image):
     result = subprocess.run(
-        cmd,
+        ['regctl', 'tag', 'ls', image],
         capture_output=True, text=True, timeout=60,
     )
     if result.returncode != 0:
@@ -71,7 +61,7 @@ def get_tags(image, filter_glob=None):
 
 
 def get_latest_stable(image, current_tag):
-    tags = get_tags(image, tag_to_glob_filter(current_tag))
+    tags = get_tags(image)
     if not tags:
         return None
     pattern = re.compile(tag_to_pattern(current_tag))
