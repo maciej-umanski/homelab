@@ -4,15 +4,25 @@ Update and chore procedures for all homelab devices.
 
 ## Quick Reference
 
-| Device        | Hostname      | Access                                      | Update Method           |
-|:--------------|:--------------|:--------------------------------------------|:------------------------|
-| Core Server   | srv-core-01   | `ssh sysadmin@srv-core-01.home.arpa`        | `apt` / Docker Compose  |
-| Stage Server  | srv-stage-01  | `ssh sysadmin@srv-stage-01.home.arpa`       | `apt`                   |
-| Pi Server     | srv-rpi-01    | `ssh sysadmin@srv-rpi-01.home.arpa`         | `apt`                   |
-| Core Router   | rtr-core-01   | WinBox / `ssh root@rtr-core-01.home.arpa`   | RouterOS system package |
-| Office Router | rtr-office-01 | WinBox / `ssh root@rtr-office-01.home.arpa` | RouterOS system package |
-| Travel Router | rtr-travel-01 | WinBox / `ssh root@rtr-travel-01.home.arpa` | RouterOS system package |
-| NAS           | nas-core-01   | `http://nas-core-01.home.arpa:8080/`        | QTS Firmware Update     |
+| Device        | Hostname      | Access                                          | Update Method           |
+|:--------------|:--------------|:------------------------------------------------|:------------------------|
+| Core Server   | srv-core-01   | `ssh sysadmin@srv-core-01.home.arpa`            | `apt` / Docker Compose  |
+| Stage Server  | srv-stage-01  | `ssh sysadmin@srv-stage-01.home.arpa`           | `apt`                   |
+| Pi Server     | srv-rpi-01    | `ssh sysadmin@srv-rpi-01.home.arpa`             | `apt`                   |
+| Core Router   | rtr-core-01   | WinBox / `ssh sysadmin@rtr-core-01.home.arpa`   | RouterOS system package |
+| Office Router | rtr-office-01 | WinBox / `ssh sysadmin@rtr-office-01.home.arpa` | RouterOS system package |
+| Travel Router | rtr-travel-01 | WinBox / `ssh sysadmin@rtr-travel-01.home.arpa` | RouterOS system package |
+| NAS           | nas-core-01   | `http://nas-core-01.home.arpa:8080/`            | QTS Firmware Update     |
+
+---
+
+## Data Location & Backup
+
+|   Device    |        Location         | Method | Target                          | Schedule |
+|:-----------:|:-----------------------:|--------|:--------------------------------|:---------|
+| nas-core-01 |          vault          | HBS 3  | External HDD                    | Daily    |
+| srv-core-01 | ssd/config + docker/opt | Rsync  | nas-core-01/vault/docker-backup | Weekly   |
+| srv-core-01 |        ssd/media        | Manual | nas-core-01/media               | Monthly  |
 
 ---
 
@@ -22,7 +32,9 @@ Update and chore procedures for all homelab devices.
 
 - Check HBS 3 backup status on nas-core-01: verify last backup completed without errors, confirm backup target is
   reachable
-- Verify Docker applications are running: `docker ps --format "table {{.Names}}\t{{.Status}}"` on each server
+- Check docker backup status on srv-core-01: verify last backup completed without errors, confirm backup target is
+  reachable
+- Verify Docker applications are running: `docker ps --format "table {{.Names}}\t{{.Status}}"`
 - Check Let's Encrypt certificate expiry in Nginx Proxy Manager UI (`http://srv-core-01.home.arpa:81`)
 
 ### Monthly
@@ -31,6 +43,7 @@ Update and chore procedures for all homelab devices.
 - Update QTS firmware on nas-core-01
 - Run system updates on all servers
 - Pull updates and restart Docker applications
+- Check for media that can be archived to nas-core-01/media and remove from srv-core-01/ssd/media
 
 ### Quarterly
 
@@ -38,6 +51,7 @@ Update and chore procedures for all homelab devices.
 - Audit Terraform provider versions for available upgrades: `terraform init -upgrade`
 - Check storage usage on all devices: `df -h` — alert if any filesystem exceeds 80%
 - Review and prune adblock lists in DNS (rtr-core-01)
+- Check for media that can be removed completely from `srv-core-01/ssd/media` and `nas-core-01/media`
 
 ---
 
@@ -149,27 +163,6 @@ Nginx Proxy Manager auto-renews certificates 30 days before expiry. Verify by:
 3. If auto-renewal has failed, verify firewall rule allow ing inbound HTTP traffic to NPM, and check DNS resolution for
    the domain.
 4. trigger manual renewal and check DNS propagation
-
----
-
-## Backup & Restore
-
-### What is Backed Up
-
-| Source             | Method        | Target       | Schedule  |
-|:-------------------|:--------------|:-------------|:----------|
-| Docker config dirs | HBS 3 (QNAP)  | External HDD | Daily     |
-| Immich photos      | HBS 3 (QNAP)  | External HDD | Daily     |
-| Home Assistant     | HBS 3 (QNAP)  | External HDD | Daily     |
-| Gitea repos        | HBS 3 (QNAP)  | External HDD | Daily     |
-| Jellyfin media     | Manual export | QNAP         | On change |
-| RouterOS config    | Manual export | Local PC     | On change |
-
-### Verifying Backups
-
-1. Check HBS 3 dashboard on nas-core-01: verify last run status for each job is green
-2. Spot-check a backup: browse the backup target and confirm the latest directory has expected files
-3. Quarterly: restore a test file from backup to confirm restore path works
 
 ---
 

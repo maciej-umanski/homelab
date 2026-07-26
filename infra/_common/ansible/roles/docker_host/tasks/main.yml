@@ -150,3 +150,47 @@
     group: "{{ docker_svc_group }}"
     mode: '0644'
     create: yes
+
+- name: Install rsync
+  ansible.builtin.apt:
+    name: rsync
+    state: present
+  when: docker_env_vars is defined and docker_env_vars.VAULT_ROOT is defined
+
+- name: Deploy backup script
+  ansible.builtin.copy:
+    dest: /usr/local/bin/docker-backup.sh
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      LOG_TAG="docker-backup"
+
+      logger -t "$LOG_TAG" "Starting backup"
+
+      BACKUP_DIR="{{ docker_env_vars.VAULT_ROOT }}/docker-backup/backup-$(date +%Y%m%d)"
+      mkdir -p "$BACKUP_DIR"
+
+      logger -t "$LOG_TAG" "Backing up config: $(du -sh '{{ docker_env_vars.CONFIG_ROOT }}' 2>/dev/null | cut -f1)"
+      rsync -az --filter='- cache/' --filter='- .cache/' --info=COPY2,DEL2,REMOVE2,STATS2 "{{ docker_env_vars.CONFIG_ROOT }}" "$BACKUP_DIR" 2>&1 | tee "$BACKUP_DIR/rsync-summary.log" | logger -t "$LOG_TAG"
+
+      logger -t "$LOG_TAG" "Backing up /opt/docker: $(du -sh /opt/docker 2>/dev/null | cut -f1)"
+      rsync -az --filter='- cache/' --filter='- .cache/' --info=COPY2,DEL2,REMOVE2,STATS2 /opt/docker "$BACKUP_DIR" 2>&1 | tee -a "$BACKUP_DIR/rsync-summary.log" | logger -t "$LOG_TAG"
+
+      logger -t "$LOG_TAG" "Backup completed: $BACKUP_DIR"
+
+      logger -t "$LOG_TAG" "Removing backups older than {{ docker_backup_retention_days }} days"
+      find "{{ docker_env_vars.VAULT_ROOT }}/docker-backup" -maxdepth 1 -type d -name 'backup-*' -mtime +{{ docker_backup_retention_days }} -exec rm -rf {} + 2>/dev/null
+    owner: root
+    group: root
+    mode: '0755'
+  when: docker_env_vars is defined and docker_env_vars.VAULT_ROOT is defined
+
+- name: Set up weekly cron job
+  ansible.builtin.cron:
+    name: docker-backup
+    minute: "{{ docker_backup_minute }}"
+    hour: "{{ docker_backup_hour }}"
+    weekday: "{{ docker_backup_weekday }}"
+    job: /usr/local/bin/docker-backup.sh
+  when: docker_env_vars is defined and docker_env_vars.VAULT_ROOT is defined
