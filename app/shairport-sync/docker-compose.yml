@@ -1,7 +1,7 @@
 services:
 
   shairport-sync:
-    image: mikebrady/shairport-sync
+    image: mikebrady/shairport-sync:5.1
     container_name: shaiport-sync
     network_mode: host
     restart: unless-stopped
