@@ -1,7 +1,7 @@
 services:
 
   arcane:
-    image: ghcr.io/getarcaneapp/manager:v2.5.0
+    image: ghcr.io/getarcaneapp/manager:v2.6.0
     container_name: arcane
     ports:
       - '3552:3552'
