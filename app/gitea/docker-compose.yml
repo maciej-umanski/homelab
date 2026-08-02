@@ -1,6 +1,6 @@
 services:
   server:
-    image: docker.gitea.com/gitea:1.27.0
+    image: docker.gitea.com/gitea:1.27.1
     container_name: gitea
     restart: unless-stopped
     volumes:
